@@ -10,7 +10,11 @@ WHERE  (town_from='Воронеж' AND  town_to ='Москва') OR  (town_from=
   SELECT name, COUNT(*) AS 'количество перелетов' FROM  Passenger
   GROUP BY name 
 -- 4. Вывести рейтинг авиакомпаний по количеству совершенных рейсов, которые совершили более 5 рейсов.
-  
+  SELECT name, COUNT(*) as count
+FROM Company 
+JOIN Trip on Trip.company  = Company.id 
+GROUP BY name
+HAVING COUNT(*) > 5
 -- 5.	Вывести топ 3 самых продолжительных рейсов, совершенных в мае 2020.
 SELECT  * AS flight_time
 FROM Trip
