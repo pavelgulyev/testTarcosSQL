@@ -11,7 +11,8 @@ WHERE  (town_from='Воронеж' AND  town_to ='Москва') OR  (town_from=
 
 -- 3. Вывести имена всех пассажиров и количество перелетов. (примерно 1 минуту )  
   SELECT name, COUNT(*) AS 'количество перелетов' FROM  Passenger
-  GROUP BY name 
+ JOIN Pass_in_trip ON Pass_in_trip.passenger=Passenger.id
+   GROUP BY name 
 -- 4. Вывести рейтинг авиакомпаний по количеству совершенных рейсов, которые совершили более 5 рейсов.
   SELECT name, COUNT(*) as count
 FROM Company 
