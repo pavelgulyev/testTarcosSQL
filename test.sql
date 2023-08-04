@@ -1,8 +1,7 @@
 -- 1. Вывести имена всех пассажиров, которые ни разу не пользовались услугами авиакомпаний
-SELECT *, COUNT(Pass_in_trip.id)
+SELECT  name
 FROM Passenger
-JOIN Pass_in_trip ON Pass_in_trip.passenger=Passenger.id
-GROUP BY name. id 
+WHERE NOT EXISTS (SELECT * FROM Pass_in_trip WHERE Passenger.id = Pass_in_trip.passenger) 
 -- 2. Вывести количество пассажиров, которые летели из Воронежа в Москву или обратно.   
   SELECT COUNT(*) AS количество_пассажиров FROM  Passenger 
 JOIN Pass_in_trip ON Pass_in_trip.passenger=Passenger.id
