@@ -37,3 +37,4 @@ FROM (SELECT Passenger.id AS passenger1, name AS name1, trip AS trip1 FROM Passe
     ON UP1.trip1 = UP2.trip2
 WHERE (passenger1<passenger2) GROUP BY name1, name2 
 HAVING (COUNT(trip1)>1);
+Задание заняло 30 минут
