@@ -17,6 +17,8 @@ public interface ServicesDAO {
      */
     ObservableList<Services> getServices() throws SQLException, URISyntaxException, IOException;
 
+    ObservableList<String> getServicesString() throws SQLException, URISyntaxException, IOException;
+
     /**
      * Маппинг результата апроса
      * @param result результирующий список
@@ -30,4 +32,5 @@ public interface ServicesDAO {
     Services getServiceID(String id) throws SQLException, URISyntaxException, IOException;
 
 
+    Services getServiceName(String name) throws SQLException, URISyntaxException, IOException;
 }

@@ -25,10 +25,10 @@ public class SQLiteChangesDAO implements ChangesDAO {
         Statement statement = connection.createStatement();
         ResultSet set = statement.executeQuery("Select * from Change;");
         System.out.println("row Change-"+set.getRow());
-        Changes requirements = new Changes();
+        Changes changes = new Changes();
         while (set.next()) {
-            requirements = MappingChanges(set);
-            res.add(requirements);
+            changes = MappingChanges(set);
+            res.add(changes);
         }
         return res;
     }
@@ -71,34 +71,39 @@ public class SQLiteChangesDAO implements ChangesDAO {
     }
 
     @Override
-    public void addChanges(Changes changes) {
+    public void addChanges(Changes changes) throws SQLException {
+        Changes requirements = changes;
+        PreparedStatement insert  = connection.prepareStatement("insert into Change (Description,priority,status," +
+                "Services_Id,User_Id) " +
+                "values(?,?,?,?,?);");
+        insert.setString(1,requirements.getDescriptionChange());
+        insert.setString(2,requirements.getPriority());
+        insert.setString(3,requirements.getStatusChange());
+        insert.setString(4,requirements.getIdService());
+        insert.setString(5,requirements.getIdResponsibleChange());
+        insert.executeUpdate();
 
     }
 
     @Override
     public void updateChanges(Changes changes) throws SQLException {
         Changes requirements = changes;
-        PreparedStatement insert  = connection.prepareStatement("update Change set Name = ?, Priority = ?, " +
-                "Status = ?, Author=?, Type=?, " +
-                "Complexity=?, Source=?, Reason=?, Description=?, RiskAssessment=?  where Requirements_ID = ?");
-//        insert.setString(1,requirements.getName());
+        PreparedStatement insert  = connection.prepareStatement("update Change set Description = ?, priority = ?, " +
+                "status = ?, Services_Id=?, User_Id=? " +
+                "  where Change_ID = ?");
+        insert.setString(1,requirements.getDescriptionChange());
         insert.setString(2,requirements.getPriority());
         insert.setString(3,requirements.getStatusChange());
-//        insert.setString(4,requirements.getAuthor());
-//        insert.setString(5,requirements.getType());
-//        insert.setString(6,requirements.getComplexity());
-//        insert.setString(7,requirements.getSource());
-//        insert.setString(8,requirements.getReason());
-//        insert.setString(9,requirements.getDescription());
-//        insert.setString(10,requirements.getRiskAssessment());
-//        insert.setString(11, requirements.getId_Requirements());
+        insert.setString(4,requirements.getIdService());
+        insert.setString(5,requirements.getIdResponsibleChange());
+        insert.setString(6, requirements.getIdResponsibleChange());
         insert.executeUpdate();
     }
 
     @Override
     public void deleteChanges(Changes changes) throws SQLException {
         Changes changes1=(Changes) changes;
-        PreparedStatement insert  = connection.prepareStatement("delete from Requirements where Requirements_ID = ?");
+        PreparedStatement insert  = connection.prepareStatement("delete from Change where Change_ID = ?");
         insert.setString(1, String.valueOf(changes1.getId_Change()));
         insert.executeUpdate();
     }

@@ -6,11 +6,13 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.logging.Logger;
 
 
 public class SQLiteUserDAO  implements UserDAO {
     Connection connection= SQLiteDAOFabrica.createConnection();
+    private static Logger LOGGER  = Logger.getLogger(SQLiteUserDAO.class.getName());;
+
     @Override
     public List<Users> getAllEntity() throws SQLException, IOException {
         List <Users> list = new ArrayList<Users>();
@@ -62,7 +64,6 @@ public class SQLiteUserDAO  implements UserDAO {
     @Override
     public Users findUserByID(int id) throws SQLException, IOException {
         Users user = new Users();
-
         String sql = "SELECT * FROM User WHERE USER_ID='"+id+"';";
         Statement statement = null;
         ResultSet resultSet = null;
@@ -73,9 +74,9 @@ public class SQLiteUserDAO  implements UserDAO {
                 user= Mapping(resultSet);
             }
         } finally {
-            if (resultSet != null) try { resultSet.close(); } catch(SQLException logOrIgnore) {}
-            if (statement != null) try { statement.close(); } catch (SQLException logOrIgnore) {}
-            if (connection != null) try { connection.close(); } catch (SQLException logOrIgnore) {}
+            if (resultSet != null) try { resultSet.close(); } catch(SQLException logOrIgnore) { LOGGER.info(logOrIgnore.getSQLState());}
+            if (statement != null) try { statement.close(); } catch (SQLException logOrIgnore) { LOGGER.info(logOrIgnore.getSQLState()); }
+            if (connection != null) try { connection.close(); } catch (SQLException logOrIgnore) { LOGGER.info(logOrIgnore.getSQLState());}
         }
         return user;
     }
@@ -105,11 +106,9 @@ public class SQLiteUserDAO  implements UserDAO {
     public Users findUser(String login) throws SQLException, IOException {
         Users user = new Users();
         String sql = "SELECT * FROM User WHERE LOGIN='"+login+"';";
-        System.out.println(sql);
         Statement statement = null;
         ResultSet resultSet = null;
         try {
-
             statement = connection.createStatement();
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
@@ -121,7 +120,6 @@ public class SQLiteUserDAO  implements UserDAO {
             if (connection != null) try { connection.close(); } catch (SQLException logOrIgnore) {}
         }
         return user;
-
     }
 
     @Override

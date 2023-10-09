@@ -57,25 +57,26 @@ public class Changes {
         DescriptionChange = descriptionChange;
     }
 
-//    public Services getService() {
-//        return Service;
-//    }
+    public String getIdService() {
+        return String.valueOf(Service.getId_Service());
+    }
     public String getService() {
         return Service.getNameService();
     }
+    public void setServiceName(String name) throws SQLException, URISyntaxException, IOException {
+        this.Service= HomeViewController.daoFactory.getServicesDAO().getServiceName(name);
+    }
     public void setService(String service) throws SQLException, URISyntaxException, IOException {
         this.Service= HomeViewController.daoFactory.getServicesDAO().getServiceID(service);
-
     }
     public void setService(Services service) {
         Service = service;
     }
-
-//    public Users getResponsibleChange() {
-//        return ResponsibleChange;
-//    }
     public String getResponsibleChange() {
         return ResponsibleChange.getLogin();
+    }
+    public String getIdResponsibleChange() {
+        return String.valueOf(ResponsibleChange.getId_User());
     }
     public void setResponsibleChange(String responsibleChange) throws SQLException, URISyntaxException, IOException {
 

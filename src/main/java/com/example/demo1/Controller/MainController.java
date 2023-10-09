@@ -1,10 +1,9 @@
 package com.example.demo1.Controller;
 
-import com.example.demo1.Model.Changes;
-import com.example.demo1.Model.PriorityChangeEnum;
-import com.example.demo1.Model.StatusChangeEnum;
+import com.example.demo1.Model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -39,9 +38,13 @@ public class MainController implements Initializable {
     @FXML
     public ComboBox<PriorityChangeEnum> comboPriority;
     @FXML
+    public ComboBox<String> comboServices;
+    @FXML
     public VBox vboxNotForGuest;
     @FXML
     public TextArea textDescription;
+    @FXML
+    public CheckBox checkAuthor;
     @FXML
     public GridPane grid;
     public void selectSourceTab(MouseEvent mouseEvent) {
@@ -52,18 +55,25 @@ public class MainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         comboStatus.setItems(FXCollections.observableArrayList(StatusChangeEnum.values()));
         comboPriority.getItems().addAll(PriorityChangeEnum.values());
+        try {
+            comboServices.getItems().addAll(HomeViewController.daoFactory.getServicesDAO().getServicesString());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         if(!LoginController.isUserIn) {
             vboxNotForGuest.setVisible(false);
             grid.setVisible(false);
         }
         try {
-            tableView(HomeViewController.daoFactory.getChangeDAO().getAllChanges());
-        } catch (SQLException e) {
+            tableFill(HomeViewController.daoFactory.getChangeDAO().getAllChanges());
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         RequirementsTable.setRowFactory(tableView -> {
@@ -71,7 +81,11 @@ public class MainController implements Initializable {
             row.selectedProperty().addListener((observable) -> {
                 changes = row.getItem();
                 textDescription.setText(changes.getDescriptionChange());
-               // System.out.println("Пользователь Login="+ changes.ResponsibleChange.getLogin());
+                for ( String nameServices: comboServices.getItems()) {
+                    if(changes.getService().equals(nameServices)){
+                        comboServices.setValue(nameServices);
+                    }
+                }
                 switch (changes.getPriority()) {
                     case "Высокий" -> comboPriority.setValue(PriorityChangeEnum.valueOf("high"));
                     case "Средний" -> comboPriority.setValue(PriorityChangeEnum.valueOf("middle"));
@@ -92,7 +106,7 @@ public class MainController implements Initializable {
      * @param requirements отсортированный список требований
      * @throws SQLException
      */
-    private void tableView(ObservableList<Changes> requirements) throws SQLException {
+    private void tableFill(ObservableList<Changes> requirements) throws SQLException {
         RequirementsTable.setItems(requirements);
         id_Change.setCellValueFactory(new PropertyValueFactory<>("id_Change"));
         PriorityChange.setCellValueFactory(new PropertyValueFactory<>("Priority"));
@@ -100,5 +114,79 @@ public class MainController implements Initializable {
         Description_Change.setCellValueFactory(new PropertyValueFactory<>("DescriptionChange"));
         Service_Change.setCellValueFactory(new PropertyValueFactory<>("Service"));
         ResponsibleChange.setCellValueFactory(new PropertyValueFactory<>("ResponsibleChange"));
+    }
+
+    public void Delete(ActionEvent actionEvent) throws SQLException, URISyntaxException, IOException {
+        if (RequirementsTable.getSelectionModel().getSelectedItem() != null) {
+            TableView.TableViewSelectionModel<Changes> selectionModel = RequirementsTable.getSelectionModel();
+            int myIndex = RequirementsTable.getSelectionModel().getSelectedIndex();
+            HomeViewController.daoFactory.getChangeDAO().deleteChanges(RequirementsTable.getSelectionModel().getSelectedItem());
+            tableFill(HomeViewController.daoFactory.getChangeDAO().getAllChanges());
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Ошибка");
+            alert.setContentText("Выберете требование для удаления");
+            alert.showAndWait();
+        }
+    }
+    public void clear(){
+        comboServices.setValue("");
+        comboPriority.getSelectionModel().clearSelection();
+        comboStatus.getSelectionModel().clearSelection();
+        textDescription.setText("");
+    }
+    public void Update(ActionEvent actionEvent) throws SQLException, URISyntaxException, IOException {
+        if(checkEmpty()) {
+            String id = changes.getIdResponsibleChange();
+            Users users;
+            if (checkAuthor.isSelected()) {
+                users = LoginController.user;
+            } else {
+                users = changes.ResponsibleChange;
+            }
+            changes.setDescriptionChange(textDescription.getText());
+            changes.setPriority(comboPriority.getSelectionModel().getSelectedItem().toString());
+            changes.setStatusChange(comboStatus.getSelectionModel().getSelectedItem().toString());
+            changes.setServiceName(comboServices.getSelectionModel().getSelectedItem());
+            changes.setResponsibleChange(LoginController.user);
+            HomeViewController.daoFactory.getChangeDAO().updateChanges(changes);
+            tableFill(HomeViewController.daoFactory.getChangeDAO().getAllChanges());
+            clear();
+
+        }
+    }
+    public boolean checkEmpty(){
+        if(comboStatus.getSelectionModel().isEmpty()){
+            alertErrors("статус требования ");
+            return false;
+        }
+        if(comboPriority.getSelectionModel().isEmpty()){
+            alertErrors("приоритет требования");
+            return false;
+        }
+        if(textDescription.getText().isEmpty()){
+            alertErrors("описание изменения");
+            return false;
+        }
+        return true;
+    }
+    public void alertErrors(String errors){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Ошибка");
+        alert.setContentText("Введите  "+errors);
+        alert.showAndWait();
+    }
+    public void Add(ActionEvent actionEvent) throws SQLException, URISyntaxException, IOException {
+        if(checkEmpty()) {
+            changes.setDescriptionChange(textDescription.getText());
+            changes.setPriority(comboPriority.getSelectionModel().getSelectedItem().toString());
+            changes.setStatusChange(comboStatus.getSelectionModel().getSelectedItem().toString());
+            changes.setServiceName(comboServices.getSelectionModel().getSelectedItem());
+            changes.setResponsibleChange(LoginController.user);
+            HomeViewController.daoFactory.getChangeDAO().addChanges(changes);
+            tableFill(HomeViewController.daoFactory.getChangeDAO().getAllChanges());
+            clear();
+        }
     }
 }

@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public interface ChangesDAO {
     ObservableList<Changes> getAllChanges() throws SQLException, URISyntaxException, IOException;
     Changes getChangesById(String id) throws SQLException, URISyntaxException, IOException;
-    void addChanges(Changes changes);
+    void addChanges(Changes changes) throws SQLException;
     void updateChanges(Changes changes) throws SQLException;
     void deleteChanges(Changes changes) throws SQLException ;
 
