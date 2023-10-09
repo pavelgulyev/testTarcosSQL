@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Button?>
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.demo1.Controller.LoginController"
+      prefHeight="400.0" prefWidth="600.0">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <Label text="Введите логин">
+        <font>
+            <Font size="20.0" />
+        </font></Label>
+    <TextField fx:id="LoginText" maxWidth="300.0" prefWidth="300.0" />
+    <Label alignment="CENTER" text="Введите пароль" textAlignment="CENTER">
+        <font>
+            <Font size="20.0" />
+        </font>
+    </Label>
+    <PasswordField fx:id="PasswordText" maxWidth="300.0" />
+    <Label fx:id="Error" />
+    <Button onAction="#onLogin"
+            style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;"
+            text="Войти">
+        <font>
+            <Font size="20.0" />
+        </font></Button>
+    <Hyperlink onAction="#onShowRegister" text="Нет данных - Регистрация" textFill="#151515">
+        <font>
+            <Font size="19.0" />
+        </font>
+    </Hyperlink>
+    <!-- <Button onAction="#onGuest" text="Войти как гость (только просмотр)"
+    style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;">
+        <font>
+            <Font size="20.0" />
+        </font>
+    </Button>-->
+</VBox>

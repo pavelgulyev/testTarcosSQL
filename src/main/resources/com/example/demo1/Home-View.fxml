@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="224.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.Controller.HomeViewController">
+   <children>
+      <Button layoutX="92.0" layoutY="56.0" mnemonicParsing="false" onAction="#onDataBase" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Загрузка из БД">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+      <Button layoutX="81.0" layoutY="166.0" mnemonicParsing="false" onAction="#onTxt" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Загрузка из Файла">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+      <Button layoutX="86.0" layoutY="112.0" mnemonicParsing="false" onAction="#onRam" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" text="Загрузка из RAM">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+   </children>
+</AnchorPane>

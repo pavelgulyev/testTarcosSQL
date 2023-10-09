@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<FlowPane prefHeight="483.0" prefWidth="1015.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.Controller.MainController">
+   <VBox alignment="TOP_CENTER" prefHeight="452.0" prefWidth="201.0" spacing="10.0">
+      <children>
+         <Label text="Выбирите фильтр ">
+            <font>
+               <Font size="14.0" />
+            </font></Label>
+         <ComboBox prefWidth="150.0" />
+         <HBox alignment="CENTER" prefHeight="45.0" prefWidth="200.0" spacing="20.0">
+            <children>
+               <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" text="Фильтрование" />
+               <Button alignment="CENTER" mnemonicParsing="false" text="Отменить" />
+            </children>
+         </HBox>
+      </children>
+      <FlowPane.margin>
+         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+      </FlowPane.margin></VBox>
+    <TableView fx:id="RequirementsTable" onMouseClicked="#selectSourceTab" prefHeight="452.0" prefWidth="436.0">
+        <columns>
+            <TableColumn fx:id="id_Change" prefWidth="20.0" text="Id" />
+            <TableColumn fx:id="Description_Change" prefWidth="75.0" text="Описание" />
+            <TableColumn fx:id="Service_Change" prefWidth="75.0" text="Сервис" />
+            <TableColumn fx:id="PriorityChange" text="Приоритет" />
+            <TableColumn fx:id="StatusChange" prefWidth="82.0" text="Статус" />
+            <TableColumn fx:id="ResponsibleChange" prefWidth="95.0" text="Ответственный" />
+        </columns>
+    </TableView>
+    <GridPane fx:id="grid" prefHeight="400.0" prefWidth="300.0" style="-fx-background-color: white;">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="80.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="80.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+        <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                <children>
+                    <Label text="Выберите статус ">
+                    </Label>
+                </children></HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+                <children>
+                    <ComboBox fx:id="comboStatus" prefWidth="150.0" />
+                </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+                <children>
+                    <Label text="Выберите приоритет ">
+                    </Label>
+                </children></HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <children>
+                    <ComboBox fx:id="comboPriority" prefWidth="150.0" />
+                </children></HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
+                <children>
+                    <Label text="Описание ">
+                    </Label>
+                </children></HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <children>
+                    <TextArea fx:id="textDescription" prefHeight="318.0" prefWidth="150.0" style="-fx-border-color: black; -fx-border-width: 1;" />
+                </children></HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="3">
+                <children>
+                    <CheckBox fx:id="checkAuthor" mnemonicParsing="false" prefHeight="79.0" prefWidth="147.0" text="Изменить ответственного" wrapText="true" />
+                </children>
+            </HBox>
+        </children>
+    </GridPane>
+</FlowPane>
