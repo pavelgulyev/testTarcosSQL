@@ -1,7 +1,6 @@
 package com.example.demo1.DAO;
 
 import com.example.demo1.Model.Changes;
-import com.example.demo1.Model.Users;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -32,7 +31,30 @@ public class SQLiteChangesDAO implements ChangesDAO {
         }
         return res;
     }
+    @Override
+    public ObservableList<Changes> getAllChangesFilter(String filter, String value) throws SQLException, URISyntaxException, IOException {
+        ObservableList<Changes> res = FXCollections.observableArrayList();
+        Statement statement = connection.createStatement();
 
+        String sql=null;
+        switch(filter){
+            case  "Статус" :
+                sql = "Select * from Change where status='"+value+"';";
+                break;
+            case  "Приоритет" :
+                sql = "Select * from Change where priority='"+value+"';";
+                break;
+        }
+
+        ResultSet set = statement.executeQuery(sql);
+        System.out.println("sql ChangesFilter-"+sql);
+        Changes changes = new Changes();
+        while (set.next()) {
+            changes = MappingChanges(set);
+            res.add(changes);
+        }
+        return res;
+    }
     private Changes MappingChanges(ResultSet result1) throws SQLException, URISyntaxException, IOException {
         ResultSet result = (ResultSet) result1;
         Changes changes = new Changes();
@@ -96,7 +118,7 @@ public class SQLiteChangesDAO implements ChangesDAO {
         insert.setString(3,requirements.getStatusChange());
         insert.setString(4,requirements.getIdService());
         insert.setString(5,requirements.getIdResponsibleChange());
-        insert.setString(6, requirements.getIdResponsibleChange());
+        insert.setString(6, String.valueOf(requirements.getId_Change()));
         insert.executeUpdate();
     }
 

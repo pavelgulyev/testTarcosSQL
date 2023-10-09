@@ -12,6 +12,9 @@ import java.sql.SQLException;
  */
 public interface ChangesDAO {
     ObservableList<Changes> getAllChanges() throws SQLException, URISyntaxException, IOException;
+
+    ObservableList<Changes> getAllChangesFilter(String filter, String value) throws SQLException, URISyntaxException, IOException;
+
     Changes getChangesById(String id) throws SQLException, URISyntaxException, IOException;
     void addChanges(Changes changes) throws SQLException;
     void updateChanges(Changes changes) throws SQLException;

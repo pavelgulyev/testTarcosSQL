@@ -16,7 +16,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class MainController implements Initializable {
     @FXML
@@ -40,6 +43,10 @@ public class MainController implements Initializable {
     @FXML
     public ComboBox<String> comboServices;
     @FXML
+    public ComboBox<String> comboFilter;
+    @FXML
+    public ComboBox<String> comboFilterValue;
+    @FXML
     public VBox vboxNotForGuest;
     @FXML
     public TextArea textDescription;
@@ -55,6 +62,17 @@ public class MainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         comboStatus.setItems(FXCollections.observableArrayList(StatusChangeEnum.values()));
         comboPriority.getItems().addAll(PriorityChangeEnum.values());
+        ObservableList<String> elements = FXCollections.observableArrayList(
+                "Статус",
+                "Приоритет"
+        );
+        comboFilter.getItems().addAll(elements);
+        comboFilterValue.setVisible(false);
+        comboFilter.getSelectionModel().selectedItemProperty().addListener((options, oldValue, filter) -> {
+            comboFilterValue.setVisible(true);
+            fillComboboxValueFilter(filter);
+//            System.out.println(filter);
+        });
         try {
             comboServices.getItems().addAll(HomeViewController.daoFactory.getServicesDAO().getServicesString());
         } catch (SQLException e) {
@@ -97,10 +115,10 @@ public class MainController implements Initializable {
                     case "Завершено" -> comboStatus.setValue(StatusChangeEnum.valueOf("st3"));
                 }
             });
-
             return row;
         });
     }
+
     /**
      * Функция отображения в таблице
      * @param requirements отсортированный список требований
@@ -132,6 +150,7 @@ public class MainController implements Initializable {
     }
     public void clear(){
         comboServices.setValue("");
+        //comboServices.getSelectionModel().clearSelection();
         comboPriority.getSelectionModel().clearSelection();
         comboStatus.getSelectionModel().clearSelection();
         textDescription.setText("");
@@ -142,6 +161,7 @@ public class MainController implements Initializable {
             Users users;
             if (checkAuthor.isSelected()) {
                 users = LoginController.user;
+                System.out.println(LoginController.user.getLogin());
             } else {
                 users = changes.ResponsibleChange;
             }
@@ -149,11 +169,10 @@ public class MainController implements Initializable {
             changes.setPriority(comboPriority.getSelectionModel().getSelectedItem().toString());
             changes.setStatusChange(comboStatus.getSelectionModel().getSelectedItem().toString());
             changes.setServiceName(comboServices.getSelectionModel().getSelectedItem());
-            changes.setResponsibleChange(LoginController.user);
+            changes.setResponsibleChange(users);
             HomeViewController.daoFactory.getChangeDAO().updateChanges(changes);
             tableFill(HomeViewController.daoFactory.getChangeDAO().getAllChanges());
             clear();
-
         }
     }
     public boolean checkEmpty(){
@@ -187,6 +206,40 @@ public class MainController implements Initializable {
             HomeViewController.daoFactory.getChangeDAO().addChanges(changes);
             tableFill(HomeViewController.daoFactory.getChangeDAO().getAllChanges());
             clear();
+        }
+    }
+
+    public void onReset(ActionEvent actionEvent) throws SQLException, URISyntaxException, IOException {
+        tableFill(HomeViewController.daoFactory.getChangeDAO().getAllChanges());
+        comboFilter.setValue("");
+        comboFilterValue.getItems().clear();
+        comboFilterValue.setVisible(false);
+        clear();
+    }
+
+    public void onFilter(ActionEvent actionEvent) throws SQLException, URISyntaxException, IOException {
+        tableFill(HomeViewController.daoFactory.getChangeDAO().getAllChangesFilter(comboFilter.getValue(), comboFilterValue.getValue()));
+    }
+    private void  fillComboboxValueFilter(String filter){
+        ObservableList<String> status = FXCollections.observableArrayList();
+        status.add(String.valueOf(StatusChangeEnum.st1));
+        status.add(String.valueOf(StatusChangeEnum.st2));
+        status.add(String.valueOf(StatusChangeEnum.st3));
+        ObservableList<String> priority = FXCollections.observableArrayList();
+        priority.add(String.valueOf(PriorityChangeEnum.high));
+        priority.add(String.valueOf(PriorityChangeEnum.middle));
+        priority.add(String.valueOf(PriorityChangeEnum.low));
+        switch (filter){
+            case  "Статус" :
+                comboFilterValue.getItems().clear();
+                comboFilterValue.getItems().addAll(status);
+                break;
+
+            case  "Приоритет"  :
+                comboFilterValue.getItems().clear();
+                comboFilterValue.getItems().addAll(priority);
+                break;
+
         }
     }
 }
