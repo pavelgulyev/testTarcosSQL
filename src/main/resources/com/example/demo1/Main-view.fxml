@@ -33,7 +33,7 @@
       <FlowPane.margin>
          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
       </FlowPane.margin></VBox>
-    <TableView fx:id="RequirementsTable" onMouseClicked="#selectSourceTab" prefHeight="452.0" prefWidth="436.0">
+    <TableView fx:id="changesTableView" onMouseClicked="#selectSourceTab" prefHeight="452.0" prefWidth="436.0">
         <columns>
             <TableColumn fx:id="id_Change" prefWidth="20.0" text="Id" />
             <TableColumn fx:id="Description_Change" prefWidth="75.0" text="Описание" />

@@ -16,14 +16,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.EnumSet;
-import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 public class MainController implements Initializable {
     @FXML
-    public TableView<Changes> RequirementsTable;
+    public TableView<Changes> changesTableView;
     @FXML
     public TableColumn<Changes, String> id_Change;
     @FXML
@@ -55,7 +52,25 @@ public class MainController implements Initializable {
     @FXML
     public GridPane grid;
     public void selectSourceTab(MouseEvent mouseEvent) {
-
+        TablePosition tablePosition = changesTableView.getSelectionModel().getSelectedCells().get(0);
+        int row1 = tablePosition.getRow();
+        changes = changesTableView.getItems().get(row1);
+        textDescription.setText(changes.getDescriptionChange());
+        for (String nameServices : comboServices.getItems()) {
+            if (changes.getService().equals(nameServices)) {
+                comboServices.setValue(nameServices);
+            }
+        }
+        switch (changes.getPriority()) {
+            case "Высокий" -> comboPriority.setValue(PriorityChangeEnum.valueOf("high"));
+            case "Средний" -> comboPriority.setValue(PriorityChangeEnum.valueOf("middle"));
+            case "Низкий" -> comboPriority.setValue(PriorityChangeEnum.valueOf("low"));
+        }
+        switch (changes.getStatusChange()) {
+            case "Запрошено" -> comboStatus.setValue(StatusChangeEnum.valueOf("st1"));
+            case "в Процессе" -> comboStatus.setValue(StatusChangeEnum.valueOf("st2"));
+            case "Завершено" -> comboStatus.setValue(StatusChangeEnum.valueOf("st3"));
+        }
     }
     public static Changes changes =new Changes();
     @Override
@@ -94,29 +109,29 @@ public class MainController implements Initializable {
             throw new RuntimeException(e);
         }
 
-        RequirementsTable.setRowFactory(tableView -> {
-            final TableRow<Changes> row = new TableRow<>();
-            row.selectedProperty().addListener((observable) -> {
-                changes = row.getItem();
-                textDescription.setText(changes.getDescriptionChange());
-                for ( String nameServices: comboServices.getItems()) {
-                    if(changes.getService().equals(nameServices)){
-                        comboServices.setValue(nameServices);
-                    }
-                }
-                switch (changes.getPriority()) {
-                    case "Высокий" -> comboPriority.setValue(PriorityChangeEnum.valueOf("high"));
-                    case "Средний" -> comboPriority.setValue(PriorityChangeEnum.valueOf("middle"));
-                    case "Низкий" -> comboPriority.setValue(PriorityChangeEnum.valueOf("low"));
-                }
-                switch (changes.getStatusChange()) {
-                    case "Запрошено" -> comboStatus.setValue(StatusChangeEnum.valueOf("st1"));
-                    case "в Процессе" -> comboStatus.setValue(StatusChangeEnum.valueOf("st2"));
-                    case "Завершено" -> comboStatus.setValue(StatusChangeEnum.valueOf("st3"));
-                }
-            });
-            return row;
-        });
+//        RequirementsTable.setRowFactory(tableView -> {
+//            final TableRow<Changes> row = new TableRow<>();
+//            row.selectedProperty().addListener((observable) -> {
+//                changes = row.getItem();
+//                textDescription.setText(changes.getDescriptionChange());
+//                for ( String nameServices: comboServices.getItems()) {
+//                    if(changes.getService().equals(nameServices)){
+//                        comboServices.setValue(nameServices);
+//                    }
+//                }
+//                switch (changes.getPriority()) {
+//                    case "Высокий" -> comboPriority.setValue(PriorityChangeEnum.valueOf("high"));
+//                    case "Средний" -> comboPriority.setValue(PriorityChangeEnum.valueOf("middle"));
+//                    case "Низкий" -> comboPriority.setValue(PriorityChangeEnum.valueOf("low"));
+//                }
+//                switch (changes.getStatusChange()) {
+//                    case "Запрошено" -> comboStatus.setValue(StatusChangeEnum.valueOf("st1"));
+//                    case "в Процессе" -> comboStatus.setValue(StatusChangeEnum.valueOf("st2"));
+//                    case "Завершено" -> comboStatus.setValue(StatusChangeEnum.valueOf("st3"));
+//                }
+//            });
+//            return row;
+//        });
     }
 
     /**
@@ -125,7 +140,7 @@ public class MainController implements Initializable {
      * @throws SQLException
      */
     private void tableFill(ObservableList<Changes> requirements) throws SQLException {
-        RequirementsTable.setItems(requirements);
+        changesTableView.setItems(requirements);
         id_Change.setCellValueFactory(new PropertyValueFactory<>("id_Change"));
         PriorityChange.setCellValueFactory(new PropertyValueFactory<>("Priority"));
         StatusChange.setCellValueFactory(new PropertyValueFactory<>("StatusChange"));
@@ -135,10 +150,10 @@ public class MainController implements Initializable {
     }
 
     public void Delete(ActionEvent actionEvent) throws SQLException, URISyntaxException, IOException {
-        if (RequirementsTable.getSelectionModel().getSelectedItem() != null) {
-            TableView.TableViewSelectionModel<Changes> selectionModel = RequirementsTable.getSelectionModel();
-            int myIndex = RequirementsTable.getSelectionModel().getSelectedIndex();
-            HomeViewController.daoFactory.getChangeDAO().deleteChanges(RequirementsTable.getSelectionModel().getSelectedItem());
+        if (changesTableView.getSelectionModel().getSelectedItem() != null) {
+            TableView.TableViewSelectionModel<Changes> selectionModel = changesTableView.getSelectionModel();
+            int myIndex = changesTableView.getSelectionModel().getSelectedIndex();
+            HomeViewController.daoFactory.getChangeDAO().deleteChanges(changesTableView.getSelectionModel().getSelectedItem());
             tableFill(HomeViewController.daoFactory.getChangeDAO().getAllChanges());
         }
         else{
@@ -154,6 +169,7 @@ public class MainController implements Initializable {
         comboPriority.getSelectionModel().clearSelection();
         comboStatus.getSelectionModel().clearSelection();
         textDescription.setText("");
+        checkAuthor.setSelected(false);
     }
     public void Update(ActionEvent actionEvent) throws SQLException, URISyntaxException, IOException {
         if(checkEmpty()) {
