@@ -7,13 +7,7 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 
 public class Changes {
-    /*
-    * ID (Идентификатор изменения)
-Описание (Описание изменения)
-Приоритет (Приоритет изменения)
-Статус (Статус изменения, например, запрошено, в процессе, завершено)
-Сервис (Ссылка на таблицу "Сервисы")
-Ответственный (Ответственное лицо за изменение)*/
+
     public int id_Change;
     public String StatusChange;
     public String  Priority;

@@ -19,7 +19,6 @@ public class ChangesCollection implements Aggregate{
         key++;
     }
     private class RequirementsIterator implements Iterator {
-
         @Override
         public boolean hasNext() {
             return requirementsCollection.containsKey(key+=1);
